@@ -18,6 +18,7 @@ class AnimalController(@Autowired private val animalService: AnimalService) {
         return ResponseEntity.ok().body(animalService.getAnimals())
     }
 
+    // FIXME: 26/04/2022  
     @GetMapping("/byId/{animalId")
     fun getAnimalsById(@RequestParam("animalId") animalId: Long): AnimalEntity{
         return animalService.getAnimalsById(animalId)
@@ -28,6 +29,7 @@ class AnimalController(@Autowired private val animalService: AnimalService) {
         return animalService.createAnimal(animal)
     }
 
+    // FIXME: 26/04/2022  
     @PutMapping("/update/{animalId}")
     fun updateAnimal(@RequestParam("animalId") animalId: Long?, @RequestBody animal: AnimalEntity?): AnimalEntity?{
         when {
@@ -42,6 +44,7 @@ class AnimalController(@Autowired private val animalService: AnimalService) {
         throw AnimalNotFound()
     }
 
+    // FIXME: 26/04/2022  
     @DeleteMapping("delete/{animalId}")
     fun deleteAnimal(@RequestParam("animalId") animalId: Long){
         when{
