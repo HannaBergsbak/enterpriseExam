@@ -18,7 +18,6 @@ class AnimalController(@Autowired private val animalService: AnimalService) {
         return ResponseEntity.ok().body(animalService.getAnimals())
     }
 
-
     @GetMapping("/byId/{animalId}")
     fun getAnimalsById(@PathVariable("animalId") animalId: Long): AnimalEntity{
         animalId?.let {
@@ -49,7 +48,7 @@ class AnimalController(@Autowired private val animalService: AnimalService) {
         throw AnimalNotFound()
     }
 
-    // FIXME: 26/04/2022  
+
     @DeleteMapping("/delete/{animalId}")
     fun deleteAnimal(@PathVariable("animalId") animalId: Long){
         when{

@@ -19,6 +19,12 @@ import java.security.InvalidParameterException
 @RequestMapping("/api")
 class AuthController(@Autowired private val userService: UserService) {
 
+    //USERS
+    @GetMapping("/user/all")
+    fun getUsers(): ResponseEntity<List<UserEntity>>{
+        return ResponseEntity.ok().body(userService.getUsers())
+    }
+
     @PostMapping(BaseEndpoints.USER_CREATE)
     fun registerUser(@RequestBody newUserInfo: NewUserInfo): ResponseEntity<UserEntity>{
         val createdUser = userService.registerUser(newUserInfo)
@@ -27,14 +33,18 @@ class AuthController(@Autowired private val userService: UserService) {
         return ResponseEntity.created(uri).body(createdUser)
     }
 
-    @GetMapping("/user/all")
-    fun getUsers(): ResponseEntity<List<UserEntity>>{
-        return ResponseEntity.ok().body(userService.getUsers())
-    }
-
     @PutMapping("/user/update/{userId}")
-    fun updateUser(@PathVariable("userId") userId: Long, @RequestBody user: LoginInfo){
-        return userService.updateUser(user, userId)
+    fun updateUser(@PathVariable("userId") userId: Long, @RequestBody user: LoginInfo?): LoginInfo{
+        when {
+            userId == null -> throw InvalidParameterException()
+            user == null -> throw InvalidParameterException()
+            else -> {
+                userService.updateUser(user, userId)?.let {
+                    return user
+                }
+            }
+        }
+        throw UserNotFound()
     }
 
     @DeleteMapping("/user/delete/{userId}")
@@ -48,6 +58,7 @@ class AuthController(@Autowired private val userService: UserService) {
         throw UserNotFound()
     }
 
+    //AUTHORITIES
     @GetMapping("${BaseEndpoints.USER_AUTHORITY}/all")
     fun getAuthorities(): ResponseEntity<List<AuthorityEntity>>{
         return ResponseEntity.ok().body(userService.getAuthorities())

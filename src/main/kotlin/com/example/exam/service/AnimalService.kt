@@ -8,6 +8,15 @@ import org.springframework.stereotype.Service
 @Service
 class AnimalService(@Autowired private val animalRepo: AnimalRepo) {
 
+    //ANIMALS
+    fun getAnimals(): List<AnimalEntity>{
+        return animalRepo.findAll()
+    }
+
+    fun getAnimalsById(animalId: Long): AnimalEntity{
+        return animalRepo.findById(animalId).orElse(null)
+    }
+
     fun createAnimal(animal: AnimalEntity): AnimalEntity{
         return animalRepo.save(animal)
     }
@@ -25,11 +34,5 @@ class AnimalService(@Autowired private val animalRepo: AnimalRepo) {
         return false
     }
 
-    fun getAnimals(): List<AnimalEntity>{
-        return animalRepo.findAll()
-    }
 
-    fun getAnimalsById(animalId: Long): AnimalEntity{
-        return animalRepo.findById(animalId).orElse(null)
-    }
 }
