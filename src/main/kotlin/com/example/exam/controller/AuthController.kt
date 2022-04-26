@@ -30,13 +30,13 @@ class AuthController(@Autowired private val userService: UserService) {
         return ResponseEntity.ok().body(userService.getUsers())
     }
 
-    @PostMapping("/user/{userId}")
+    @PutMapping("/user/update/{userId}")
     fun updateUser(@PathVariable("userId") userId: Long, @RequestBody user: LoginInfo){
         return userService.updateUser(user)
     }
 
-    @DeleteMapping("/user/{userId}")
-    fun deleteUser(@PathVariable("userId") userId: Long){@
+    @DeleteMapping("/user/delete/{userId}")
+    fun deleteUser(@PathVariable("userId") userId: Long){
     }
 
     @GetMapping("${BaseEndpoints.USER_AUTHORITY}/all")

@@ -3,25 +3,24 @@ package com.example.exam.controller
 import com.example.exam.model.AnimalEntity
 import com.example.exam.service.AnimalService
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
+import java.security.InvalidParameterException
 
 
 @RestController
 @RequestMapping("/api/shelter")
 class AnimalController(@Autowired private val animalService: AnimalService) {
 
-    // FIXME: 25/04/2022
-    // Endre disse endpointsene til å bruke ferdig genererte?
-
     @GetMapping("/all")
     fun getAllAnimals(): ResponseEntity<List<AnimalEntity>>{
         return ResponseEntity.ok().body(animalService.getAnimals())
     }
 
-    @GetMapping("/all")
-    fun getAnimalsById(): ResponseEntity<List<AnimalEntity>>{
-        TODO()
+    @GetMapping("/byId/{animalId")
+    fun getAnimalsById(@RequestParam("animalId") animalId: Long): AnimalEntity{
+        return animalService.getAnimalsById(animalId)
     }
 
     @PostMapping("/create")
@@ -30,12 +29,29 @@ class AnimalController(@Autowired private val animalService: AnimalService) {
     }
 
     @PutMapping("/update/{animalId}")
-    fun updateAnimal(@RequestParam("animalId") animalId: Long, @RequestBody animal: AnimalEntity){
-        return animalService.updateAnimal(animal)
+    fun updateAnimal(@RequestParam("animalId") animalId: Long?, @RequestBody animal: AnimalEntity?): AnimalEntity?{
+        when {
+            animalId == null -> throw InvalidParameterException()
+            animal == null -> throw InvalidParameterException()
+            else -> {
+                animalService.updateAnimal(animalId, animal)?.let {
+                    return it
+                }
+            }
+        }
+        throw AnimalNotFound()
     }
 
     @DeleteMapping("delete/{animalId}")
     fun deleteAnimal(@RequestParam("animalId") animalId: Long){
-        animalService.deleteAnimal(animalId)
+        when{
+            animalId == null -> throw InvalidParameterException()
+            else -> {
+                animalService.deleteAnimal(animalId)
+            }
+        }
+        throw AnimalNotFound()
     }
 }
+@ResponseStatus(value = HttpStatus.NOT_FOUND, reason = "Animal not found")
+class AnimalNotFound: RuntimeException()
