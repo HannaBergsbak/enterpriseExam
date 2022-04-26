@@ -18,14 +18,14 @@ class AnimalController(@Autowired private val animalService: AnimalService) {
         return ResponseEntity.ok().body(animalService.getAnimals())
     }
 
-    @GetMapping("/byId/{animalId}")
-    fun getAnimalsById(@PathVariable("animalId") animalId: Long): AnimalEntity{
+    @GetMapping("/{animalId}")
+    fun getAnimalsById(@PathVariable("animalId") animalId: Long): ResponseEntity<AnimalEntity>{
         animalId?.let {
             animalService.getAnimalsById(it)?.let { animal ->
-                return animal
+                return ResponseEntity.ok(animal)
             }
         }
-        throw AnimalNotFound()
+        return ResponseEntity.badRequest().build()
     }
 
     @PostMapping("/create")
@@ -35,30 +35,28 @@ class AnimalController(@Autowired private val animalService: AnimalService) {
 
 
     @PutMapping("/update/{animalId}")
-    fun updateAnimal(@PathVariable("animalId") animalId: Long?, @RequestBody animal: AnimalEntity?): AnimalEntity?{
+    fun updateAnimal(@PathVariable("animalId") animalId: Long?, @RequestBody animal: AnimalEntity?): ResponseEntity<AnimalEntity>{
         when {
             animalId == null -> throw InvalidParameterException()
             animal == null -> throw InvalidParameterException()
             else -> {
                 animalService.updateAnimal(animal, animalId)?.let {
-                    return animal
+                    return ResponseEntity.ok(it)
                 }
             }
         }
-        throw AnimalNotFound()
+        return ResponseEntity.badRequest().build()
     }
 
 
     @DeleteMapping("/delete/{animalId}")
-    fun deleteAnimal(@PathVariable("animalId") animalId: Long){
-        when{
-            animalId == null -> throw InvalidParameterException()
-            else -> {
-                animalService.deleteAnimal(animalId)
-            }
+    fun deleteAnimal(@PathVariable("animalId") animalId: Long): ResponseEntity<Boolean> {
+        if (animalService.deleteAnimal(animalId)){
+            return ResponseEntity.ok(true)
         }
-        throw AnimalNotFound()
+        return ResponseEntity.badRequest().body(false)
     }
 }
+/*
 @ResponseStatus(value = HttpStatus.NOT_FOUND, reason = "Animal not found")
-class AnimalNotFound: RuntimeException()
+class AnimalNotFound: RuntimeException()*/

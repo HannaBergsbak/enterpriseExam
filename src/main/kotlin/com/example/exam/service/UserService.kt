@@ -28,9 +28,12 @@ class UserService(@Autowired private val userRepo: UserRepo, @Autowired private 
         return userRepo.save(newUser)
     }
 
-    fun updateUser(user: LoginInfo, userId: Long){
-        userRepo.findById(userId)
-        userRepo.save(UserEntity(id = userId, userName = user.username, userPassword = user.password))
+    fun updateUser(user: LoginInfo, userId: Long): UserEntity?{
+        if (userRepo.existsById(userId)){
+            val userToSave = UserEntity(id = userId, userName = user.username, userPassword = user.password)
+            return userRepo.save(userToSave)
+        }
+        return null
     }
 
     override fun loadUserByUsername(username: String?): UserDetails {

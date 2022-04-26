@@ -34,28 +34,25 @@ class AuthController(@Autowired private val userService: UserService) {
     }
 
     @PutMapping("/user/update/{userId}")
-    fun updateUser(@PathVariable("userId") userId: Long, @RequestBody user: LoginInfo?): LoginInfo{
+    fun updateUser(@PathVariable("userId") userId: Long?, @RequestBody user: LoginInfo?): ResponseEntity<UserEntity>{
         when {
             userId == null -> throw InvalidParameterException()
             user == null -> throw InvalidParameterException()
             else -> {
                 userService.updateUser(user, userId)?.let {
-                    return user
+                    return ResponseEntity.ok(it)
                 }
             }
         }
-        throw UserNotFound()
+        return ResponseEntity.badRequest().build()
     }
 
     @DeleteMapping("/user/delete/{userId}")
-    fun deleteUser(@PathVariable("userId") userId: Long){
-        when{
-            userId == null -> throw InvalidParameterException()
-            else -> {
-                userService.deleteUser(userId)
-            }
+    fun deleteUser(@PathVariable("userId") userId: Long): ResponseEntity<Boolean> {
+        if (userService.deleteUser(userId)){
+            return ResponseEntity.ok(true)
         }
-        throw UserNotFound()
+        return ResponseEntity.badRequest().body(false)
     }
 
     //AUTHORITIES
@@ -73,15 +70,16 @@ class AuthController(@Autowired private val userService: UserService) {
         return ResponseEntity.created(uri).body(authorityEntity)
     }
 
+    /*
     @PostMapping("${BaseEndpoints.USER_AUTHORITY}/addToUser")
     fun addAuthorityToUser(@RequestBody authorityToUser: AuthorityToUser): ResponseEntity<Any>{
         userService.grantUserAuthority(authorityToUser.username, authorityToUser.authorityName)
         return ResponseEntity.ok().build()
-    }
+    }*/
 }
-
+/*
 @ResponseStatus(value = HttpStatus.NOT_FOUND, reason = "User not found")
 class UserNotFound: RuntimeException()
-
+*/
 
 
