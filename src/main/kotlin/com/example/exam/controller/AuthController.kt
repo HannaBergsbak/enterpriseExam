@@ -8,10 +8,12 @@ import com.example.exam.model.UserEntity
 import com.example.exam.security.filter.LoginInfo
 import com.example.exam.service.UserService
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder
 import java.net.URI
+import java.security.InvalidParameterException
 
 @RestController
 @RequestMapping("/api")
@@ -32,11 +34,18 @@ class AuthController(@Autowired private val userService: UserService) {
 
     @PutMapping("/user/update/{userId}")
     fun updateUser(@PathVariable("userId") userId: Long, @RequestBody user: LoginInfo){
-        return userService.updateUser(user)
+        return userService.updateUser(user, userId)
     }
 
     @DeleteMapping("/user/delete/{userId}")
     fun deleteUser(@PathVariable("userId") userId: Long){
+        when{
+            userId == null -> throw InvalidParameterException()
+            else -> {
+                userService.deleteUser(userId)
+            }
+        }
+        throw UserNotFound()
     }
 
     @GetMapping("${BaseEndpoints.USER_AUTHORITY}/all")
@@ -58,8 +67,10 @@ class AuthController(@Autowired private val userService: UserService) {
         userService.grantUserAuthority(authorityToUser.username, authorityToUser.authorityName)
         return ResponseEntity.ok().build()
     }
-
 }
+
+@ResponseStatus(value = HttpStatus.NOT_FOUND, reason = "User not found")
+class UserNotFound: RuntimeException()
 
 
 

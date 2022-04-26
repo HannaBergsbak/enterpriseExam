@@ -18,10 +18,15 @@ class AnimalController(@Autowired private val animalService: AnimalService) {
         return ResponseEntity.ok().body(animalService.getAnimals())
     }
 
-    // FIXME: 26/04/2022  
-    @GetMapping("/byId/{animalId")
-    fun getAnimalsById(@RequestParam("animalId") animalId: Long): AnimalEntity{
-        return animalService.getAnimalsById(animalId)
+
+    @GetMapping("/byId/{animalId}")
+    fun getAnimalsById(@PathVariable("animalId") animalId: Long): AnimalEntity{
+        animalId?.let {
+            animalService.getAnimalsById(it)?.let { animal ->
+                return animal
+            }
+        }
+        throw AnimalNotFound()
     }
 
     @PostMapping("/create")
@@ -29,15 +34,15 @@ class AnimalController(@Autowired private val animalService: AnimalService) {
         return animalService.createAnimal(animal)
     }
 
-    // FIXME: 26/04/2022  
+
     @PutMapping("/update/{animalId}")
-    fun updateAnimal(@RequestParam("animalId") animalId: Long?, @RequestBody animal: AnimalEntity?): AnimalEntity?{
+    fun updateAnimal(@PathVariable("animalId") animalId: Long?, @RequestBody animal: AnimalEntity?): AnimalEntity?{
         when {
             animalId == null -> throw InvalidParameterException()
             animal == null -> throw InvalidParameterException()
             else -> {
-                animalService.updateAnimal(animalId, animal)?.let {
-                    return it
+                animalService.updateAnimal(animal, animalId)?.let {
+                    return animal
                 }
             }
         }
@@ -45,8 +50,8 @@ class AnimalController(@Autowired private val animalService: AnimalService) {
     }
 
     // FIXME: 26/04/2022  
-    @DeleteMapping("delete/{animalId}")
-    fun deleteAnimal(@RequestParam("animalId") animalId: Long){
+    @DeleteMapping("/delete/{animalId}")
+    fun deleteAnimal(@PathVariable("animalId") animalId: Long){
         when{
             animalId == null -> throw InvalidParameterException()
             else -> {

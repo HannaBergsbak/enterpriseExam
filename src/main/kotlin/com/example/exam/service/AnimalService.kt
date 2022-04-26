@@ -12,16 +12,14 @@ class AnimalService(@Autowired private val animalRepo: AnimalRepo) {
         return animalRepo.save(animal)
     }
 
-    fun updateAnimal(id: Long, animal: AnimalEntity): AnimalEntity?{
-        if (animalRepo.existsById(animal.id!!)){
-            return animalRepo.save(animal)
-        }
-        return null
+    fun updateAnimal(animal: AnimalEntity, animalId: Long){
+        animalRepo.findById(animalId)
+        animalRepo.save(AnimalEntity(id = animalId, animalName = animal.animalName, animalType = animal.animalType, breed = animal.breed, age = animal.age, healthy = animal.healthy))
     }
 
-    fun deleteAnimal(id: Long): Boolean{
-        if (animalRepo.existsById(id)){
-            animalRepo.deleteById(id)
+    fun deleteAnimal(animalId: Long): Boolean{
+        if (animalRepo.existsById(animalId)){
+            animalRepo.deleteById(animalId)
             return true
         }
         return false
@@ -31,7 +29,7 @@ class AnimalService(@Autowired private val animalRepo: AnimalRepo) {
         return animalRepo.findAll()
     }
 
-    fun getAnimalsById(id: Long): AnimalEntity{
-        return animalRepo.findById(id).orElse(null)
+    fun getAnimalsById(animalId: Long): AnimalEntity{
+        return animalRepo.findById(animalId).orElse(null)
     }
 }
