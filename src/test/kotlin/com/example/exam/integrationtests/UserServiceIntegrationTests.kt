@@ -1,35 +1,42 @@
 package com.example.exam.integrationtests
 
-import com.example.exam.dtos.NewUserInfo
 import com.example.exam.service.UserService
-import org.junit.Test
+import org.hamcrest.Matchers
+import org.json.JSONObject
+import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase
-import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc
-import org.springframework.context.annotation.Import
+import org.springframework.boot.test.context.SpringBootTest
+import org.springframework.http.MediaType.APPLICATION_JSON
 import org.springframework.test.context.ActiveProfiles
+import org.springframework.test.web.servlet.MockMvc
+import org.springframework.test.web.servlet.post
 
-@DataJpaTest
+@SpringBootTest
 @ActiveProfiles("test")
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
-@AutoConfigureMockMvc(addFilters = true)
-class UserServiceIntegrationTests(@Autowired private val userService: UserService) {
+@AutoConfigureMockMvc(addFilters = false)
+class UserServiceIntegrationTests {
 
-    @Test
-    fun shouldGetUsers(){
-        val result = userService.getUsers()
-        assert(result.size == 1)
-    }
+    @Autowired
+    private lateinit var mockMvc: MockMvc
+
+    @Autowired
+    private lateinit var userService: UserService
 
     @Test
     fun registerAndFindUser(){
-        val newUserInfo = NewUserInfo("Jim", "jim123")
-        val createdUser = userService.registerUser(newUserInfo)
-        assert(createdUser?.userName == "Jim")
-        val foundUser = userService.loadUserByUsername("Jim")
-        assert(createdUser?.userName == foundUser.username)
+        val jsonUserEntity = JSONObject(mapOf("username" to "TestName", "password" to "pirate"))
+        mockMvc.post("/api/user/create"){
+            contentType = APPLICATION_JSON
+            content = jsonUserEntity
+        }
+            .andExpect { status { isCreated() } }
+            .andExpect { content { jsonPath("$.userName", Matchers.`is`("TestName")) } }
+
+        val storedUser = userService.loadUserByUsername("TestName")
+        assert(storedUser.username == "TestName")
+        assert(storedUser.password != "pirate")
     }
-
-
 }

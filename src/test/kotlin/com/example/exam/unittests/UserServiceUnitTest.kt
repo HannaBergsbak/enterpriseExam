@@ -1,11 +1,10 @@
 package com.example.exam.unittests
 
-import com.example.exam.dtos.NewUserInfo
+import com.example.exam.dtos.LoginInfo
 import com.example.exam.model.AuthorityEntity
 import com.example.exam.model.UserEntity
 import com.example.exam.repo.AuthorityRepo
 import com.example.exam.repo.UserRepo
-import com.example.exam.security.filter.LoginInfo
 import com.example.exam.service.UserService
 import io.mockk.every
 import io.mockk.mockk
@@ -41,7 +40,7 @@ class UserServiceUnitTest {
             AuthorityEntity(authorityName = "USER")
         }
 
-        val createdUser = userService.registerUser(NewUserInfo("Dude", "qwerty"))
+        val createdUser = userService.registerUser(LoginInfo("Dude", "qwerty"))
         assert(createdUser?.userName == "Dude")
     }
 

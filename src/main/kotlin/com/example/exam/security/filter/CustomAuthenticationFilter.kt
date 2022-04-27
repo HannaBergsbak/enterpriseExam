@@ -1,5 +1,6 @@
 package com.example.exam.security.filter
 
+import com.example.exam.dtos.LoginInfo
 import com.example.exam.security.jwt.JwtUtil
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import org.springframework.beans.factory.annotation.Autowired
@@ -36,5 +37,3 @@ class CustomAuthenticationFilter(@Autowired private val authManager: Authenticat
         response.addCookie(cookie)
     }
 }
-
-data class LoginInfo(val username: String, val password: String)

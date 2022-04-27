@@ -61,7 +61,7 @@ class AuthControllerUnitTest {
         }
             .andExpect { status { isCreated() } }
             .andExpect { content { jsonPath("$.userName", Matchers.`is`("TestName")) } }
-            .andExpect { content { jsonPath("$.password", Matchers.`is`("pirate")) } }
+            .andExpect { content { jsonPath("$.userPassword", Matchers.`is`("pirate")) } }
     }
 
     @Test

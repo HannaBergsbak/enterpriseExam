@@ -6,13 +6,14 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc
+import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.http.MediaType.APPLICATION_JSON
 import org.springframework.test.context.ActiveProfiles
 import org.springframework.test.web.servlet.MockMvc
 import org.springframework.test.web.servlet.get
 import org.springframework.test.web.servlet.post
 
-@DataJpaTest
+@SpringBootTest
 @ActiveProfiles("test")
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
 @AutoConfigureMockMvc(addFilters = true)
@@ -25,7 +26,7 @@ class SecurityIntegrationTest() {
     fun shouldLogIn(){
         mockMvc.post("/api/authentication"){
             contentType = APPLICATION_JSON
-            content = JSONObject(mapOf("userName" to "Name", "password" to "pirate"))
+            content = JSONObject(mapOf("username" to "Name", "password" to "pirate"))
         }
             .andExpect { cookie { exists("access_token") } }
     }

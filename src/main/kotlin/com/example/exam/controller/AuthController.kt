@@ -1,19 +1,15 @@
 package com.example.exam.controller
 
 import com.example.exam.BaseEndpoints
-import com.example.exam.dtos.AuthorityToUser
-import com.example.exam.dtos.NewUserInfo
+import com.example.exam.dtos.LoginInfo
 import com.example.exam.model.AuthorityEntity
 import com.example.exam.model.UserEntity
-import com.example.exam.security.filter.LoginInfo
 import com.example.exam.service.UserService
 import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder
 import java.net.URI
-import java.security.InvalidParameterException
 
 @RestController
 @RequestMapping("/api")
@@ -26,8 +22,8 @@ class AuthController(@Autowired private val userService: UserService) {
     }
 
     @PostMapping(BaseEndpoints.USER_CREATE)
-    fun registerUser(@RequestBody newUserInfo: NewUserInfo): ResponseEntity<UserEntity>{
-        val createdUser = userService.registerUser(newUserInfo)
+    fun registerUser(@RequestBody loginInfo: LoginInfo): ResponseEntity<UserEntity>{
+        val createdUser = userService.registerUser(loginInfo)
         val uri = URI.create(
             ServletUriComponentsBuilder.fromCurrentContextPath().path("/api/user").toUriString())
         return ResponseEntity.created(uri).body(createdUser)

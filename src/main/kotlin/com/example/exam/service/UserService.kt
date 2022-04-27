@@ -1,11 +1,10 @@
 package com.example.exam.service
 
-import com.example.exam.dtos.NewUserInfo
+import com.example.exam.dtos.LoginInfo
 import com.example.exam.model.AuthorityEntity
 import com.example.exam.model.UserEntity
 import com.example.exam.repo.AuthorityRepo
 import com.example.exam.repo.UserRepo
-import com.example.exam.security.filter.LoginInfo
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.security.core.authority.SimpleGrantedAuthority
 import org.springframework.security.core.userdetails.User
@@ -22,8 +21,8 @@ class UserService(@Autowired private val userRepo: UserRepo, @Autowired private 
         return userRepo.findAll()
     }
 
-    fun registerUser(newUserInfo: NewUserInfo): UserEntity?{
-        val newUser = UserEntity(userName = newUserInfo.name, userPassword = BCryptPasswordEncoder().encode(newUserInfo.password))
+    fun registerUser(loginInfo: LoginInfo): UserEntity?{
+        val newUser = UserEntity(userName = loginInfo.username, userPassword = BCryptPasswordEncoder().encode(loginInfo.password))
         newUser.authorities.add(getAuthority("USER"))
         return userRepo.save(newUser)
     }
