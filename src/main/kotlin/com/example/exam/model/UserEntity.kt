@@ -34,6 +34,4 @@ class UserEntity (
     override fun toString(): String {
         return "UserEntity(id=$id, userName='$userName', userPassword='$userPassword', userEnabled=$userEnabled, authorities=$authorities)"
     }
-
-
 }

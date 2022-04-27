@@ -41,7 +41,6 @@ class SecurityConfig(@Autowired private val userService: UserService, @Autowired
         http.authorizeRequests().anyRequest().authenticated()
         http.addFilter(authenticationFilter)
         http.addFilterBefore(CustomAuthorizationFilter(), UsernamePasswordAuthenticationFilter::class.java)
-
     }
 
     @Bean

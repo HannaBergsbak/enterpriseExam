@@ -33,7 +33,6 @@ class AnimalController(@Autowired private val animalService: AnimalService) {
         return animalService.createAnimal(animal)
     }
 
-
     @PutMapping("/update/{animalId}")
     fun updateAnimal(@PathVariable("animalId") animalId: Long?, @RequestBody animal: AnimalEntity?): ResponseEntity<AnimalEntity>{
         when {
@@ -48,7 +47,6 @@ class AnimalController(@Autowired private val animalService: AnimalService) {
         return ResponseEntity.badRequest().build()
     }
 
-
     @DeleteMapping("/delete/{animalId}")
     fun deleteAnimal(@PathVariable("animalId") animalId: Long): ResponseEntity<Boolean> {
         if (animalService.deleteAnimal(animalId)){
@@ -57,6 +55,3 @@ class AnimalController(@Autowired private val animalService: AnimalService) {
         return ResponseEntity.badRequest().body(false)
     }
 }
-/*
-@ResponseStatus(value = HttpStatus.NOT_FOUND, reason = "Animal not found")
-class AnimalNotFound: RuntimeException()*/

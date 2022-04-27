@@ -82,19 +82,4 @@ class UserServiceUnitTest {
         assert(authorities.size == 2)
         assert(authorities.first().authorityName == "Authority1")
     }
-
-    /*
-    @Test
-    fun shouldAddAuthorityToUser(){
-        every { authorityRepo.save(any()) } answers {
-            firstArg()
-        }
-
-        val userBob = UserEntity(userName = "Bob", userPassword = "pirate")
-        val authorityEntity = userService.createAuthority(AuthorityEntity(1, "Auth1"))
-        val userWithAuthority = userService.grantUserAuthority("Bob", "Auth2")
-
-
-    }
-    */
 }

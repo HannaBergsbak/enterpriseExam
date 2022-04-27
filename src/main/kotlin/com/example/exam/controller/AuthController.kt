@@ -60,17 +60,7 @@ class AuthController(@Autowired private val userService: UserService) {
         )
         return ResponseEntity.created(uri).body(authorityEntity)
     }
-
-    /*
-    @PostMapping("${BaseEndpoints.USER_AUTHORITY}/addToUser")
-    fun addAuthorityToUser(@RequestBody authorityToUser: AuthorityToUser): ResponseEntity<Any>{
-        userService.grantUserAuthority(authorityToUser.username, authorityToUser.authorityName)
-        return ResponseEntity.ok().build()
-    }*/
 }
-/*
-@ResponseStatus(value = HttpStatus.NOT_FOUND, reason = "User not found")
-class UserNotFound: RuntimeException()
-*/
+
 
 

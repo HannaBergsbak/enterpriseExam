@@ -125,10 +125,4 @@ class AuthControllerUnitTest {
             .andExpect { content { jsonPath("$.authorityName", Matchers.`is`("auth1")) } }
     }
 
-    /*
-    @Test
-    fun shouldAddAuthorityToUser(){
-
-    }
-     */
 }
