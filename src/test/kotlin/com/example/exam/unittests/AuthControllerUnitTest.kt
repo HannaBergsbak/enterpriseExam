@@ -7,9 +7,10 @@ import com.example.exam.service.UserService
 import io.mockk.every
 import io.mockk.mockk
 import org.hamcrest.Matchers
+import org.hamcrest.Matchers.`is`
 import org.hamcrest.Matchers.contains
 import org.json.JSONObject
-import org.junit.Test
+import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest
@@ -24,7 +25,7 @@ import org.springframework.test.web.servlet.*
 class AuthControllerUnitTest {
 
     @TestConfiguration
-    class controllerTestConfiguration{
+    class ControllerTestConfiguration{
         @Bean
         fun userService() = mockk<UserService>()
     }
@@ -52,30 +53,30 @@ class AuthControllerUnitTest {
 
     @Test
     fun shouldRegisterUser(){
-        val jsonUserEntity = JSONObject(mapOf("userName" to "TestName", "password" to "pirate"))
+        val jsonUserEntity = JSONObject(mapOf("username" to "TestName", "password" to "pirate"))
         every { userService.registerUser(any()) } answers { UserEntity(1, "TestName", "pirate") }
         mockMvc.post("/api/user/create"){
-            contentType = MediaType.APPLICATION_JSON
+            contentType = APPLICATION_JSON
             content = jsonUserEntity
         }
-            .andExpect { status { isOk() } }
+            .andExpect { status { isCreated() } }
             .andExpect { content { jsonPath("$.userName", Matchers.`is`("TestName")) } }
             .andExpect { content { jsonPath("$.password", Matchers.`is`("pirate")) } }
     }
 
     @Test
     fun shouldUpdateUser(){
-        val jsonUserEntity = JSONObject(mapOf("userName" to "TestName", "password" to "pirate"))
-        every { userService.registerUser(any()) } answers { firstArg() }
+        val jsonUserEntity = JSONObject(mapOf("username" to "TestName", "password" to "pirate"))
+        every { userService.updateUser(any(), any()) } answers { UserEntity(userName = "TestName", userPassword = "pirate") }
         mockMvc.put("/api/user/update/1"){
             contentType = APPLICATION_JSON
             content = jsonUserEntity
         }
             .andExpect { status { isOk() } }
             .andExpect { content { jsonPath("$.userName", Matchers.`is`("TestName")) } }
-            .andExpect { content { jsonPath("$.password", Matchers.`is`("notPirate")) } }
+            .andExpect { content { jsonPath("$.userPassword", Matchers.`is`("pirate")) } }
 
-        every { userService.registerUser(any()) } answers { null }
+        every { userService.updateUser(any(), any()) } answers { null }
         mockMvc.put("/api/user/update/1"){
             contentType = APPLICATION_JSON
             content = jsonUserEntity
@@ -108,8 +109,8 @@ class AuthControllerUnitTest {
         }
         mockMvc.get("/api/user/authority/all"){}
             .andExpect { status { isOk() } }
-            .andExpect { content { jsonPath("$[:1].authorityName", contains("auth1")) } }
-            .andExpect { content { jsonPath("$[:2].authorityName", contains("auth2")) } }
+            .andExpect { content { jsonPath("$[0].authorityName", `is`("auth1")) } }
+            .andExpect { content { jsonPath("$[1].authorityName", `is`("auth2")) } }
     }
 
     @Test
@@ -120,7 +121,7 @@ class AuthControllerUnitTest {
             contentType = APPLICATION_JSON
             content = jsonAuthEntity
         }
-            .andExpect { status { isOk() } }
+            .andExpect { status { isCreated() } }
             .andExpect { content { jsonPath("$.authorityName", Matchers.`is`("auth1")) } }
     }
 

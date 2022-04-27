@@ -34,15 +34,10 @@ class AuthController(@Autowired private val userService: UserService) {
     }
 
     @PutMapping("/user/update/{userId}")
-    fun updateUser(@PathVariable("userId") userId: Long?, @RequestBody user: LoginInfo?): ResponseEntity<UserEntity>{
-        when {
-            userId == null -> throw InvalidParameterException()
-            user == null -> throw InvalidParameterException()
-            else -> {
-                userService.updateUser(user, userId)?.let {
-                    return ResponseEntity.ok(it)
-                }
-            }
+    fun updateUser(@PathVariable("userId") userId: Long, @RequestBody user: LoginInfo): ResponseEntity<UserEntity>{
+
+        userService.updateUser(user, userId)?.let {
+            return ResponseEntity.ok(it)
         }
         return ResponseEntity.badRequest().build()
     }

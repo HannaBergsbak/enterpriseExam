@@ -22,7 +22,7 @@ class UserService(@Autowired private val userRepo: UserRepo, @Autowired private 
         return userRepo.findAll()
     }
 
-    fun registerUser(newUserInfo: NewUserInfo): UserEntity{
+    fun registerUser(newUserInfo: NewUserInfo): UserEntity?{
         val newUser = UserEntity(userName = newUserInfo.name, userPassword = BCryptPasswordEncoder().encode(newUserInfo.password))
         newUser.authorities.add(getAuthority("USER"))
         return userRepo.save(newUser)
